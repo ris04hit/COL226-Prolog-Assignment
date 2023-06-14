@@ -1,0 +1,7 @@
+% Checks if (arg1) is subsequence of (arg2) or not
+subsequence([], _).
+subsequence([Head | Tail1], [Head | Tail2]) :- subsequence(Tail1, Tail2).
+subsequence([Head1 | Tail1], [Head2 | Tail2]) :- Head1 \= Head2, subsequence([Head1 | Tail1], Tail2).
+
+
+% Query

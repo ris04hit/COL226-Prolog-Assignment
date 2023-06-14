@@ -1,0 +1,74 @@
+% evaluates all possible expression (arg1) to a value (arg2)
+% (arg3) is final expression with its initial sign as (arg4)
+expression([Num], Num, [Num], +).
+expression([Num], Num2, [Num], -) :- Num2 is -Num.
+expression([Num | Expression], Sum, [Num, Sign|String], +) :- expression(Expression, Value, String, Sign), Sum is Num + Value.
+expression([Num | Expression], Sum, [Num, Sign|String], -) :- expression(Expression, Value, String, Sign), Sum is -Num + Value.
+
+% Checks if Expression1 (arg1) and Expression2 (arg2) are equal or not for corresponding final expressions (arg3) and (arg4)
+check_equal(Expression1, Expression2, String1, String2) :- expression(Expression1, Value, String1, +), expression(Expression2, Value, String2, +).
+check_equal(Expression1, Expression2, [-|String1], String2) :- expression(Expression1, Value, String1, -), expression(Expression2, Value, String2, +).
+
+% Extends (arg1) to (arg2) to give (arg3)
+list_append([], List, List).
+list_append([Head | Tail], List, [Head | Tail_combined]) :- list_append(Tail, List, Tail_combined).
+
+% Writes list (arg1) to terminal
+write_list([]).
+write_list([Head|Tail]) :- write(Head), write_list(Tail).
+
+% Inserts +,-,= to List (arg1) to get valid equation.
+% No sign is followed by = sign.
+% There is no unary +.
+arith(List) :- 
+    list_append(List1, List2, List),
+    check_equal(List1, List2, String1, String2),
+    write_list(String1),
+    write(=),
+    write_list(String2).
+
+
+% code for allowing negative sign following equal to sign
+
+
+% % evaluates all possible expression (arg1) to a value (arg2)
+% % (arg3) is final expression with its initial sign as (arg4)
+% expression([Num], Num, [Num], +).
+% expression([Num], Num2, [Num], -) :- Num2 is -Num.
+% expression([Num | Expression], Sum, [Num, Sign|String], +) :- expression(Expression, Value, String, Sign), Sum is Num + Value.
+% expression([Num | Expression], Sum, [Num, Sign|String], -) :- expression(Expression, Value, String, Sign), Sum is -Num + Value.
+
+% % Checks if Expression1 (arg1) and Expression2 (arg2) are equal or not for corresponding final expressions (arg3) and (arg4)
+% check_equal1(Expression1, Expression2, String1, String2) :- expression(Expression1, Value, String1, +), expression(Expression2, Value, String2, +).
+% check_equal1(Expression1, Expression2, [-|String1], String2) :- expression(Expression1, Value, String1, -), expression(Expression2, Value, String2, +).
+% check_equal2(Expression1, Expression2, [-|String1], [-|String2]) :- expression(Expression1, Value, String1, -), expression(Expression2, Value, String2, -).
+% check_equal2(Expression1, Expression2, String1, [-|String2]) :- expression(Expression1, Value, String1, +), expression(Expression2, Value, String2, -).
+
+% % Extends (arg1) to (arg2) to give (arg3)
+% list_append([], List, List).
+% list_append([Head | Tail], List, [Head | Tail_combined]) :- list_append(Tail, List, Tail_combined).
+
+% % Writes list (arg1) to terminal
+% write_list([]).
+% write_list([Head|Tail]) :- write(Head), write_list(Tail).
+
+% % Inserts +,-,= to List (arg1) to get valid equation.
+% % No sign is followed by = sign.
+% % There is no unary +.
+% arith(List) :- 
+%     list_append(List1, List2, List),
+%     check_equal1(List1, List2, String1, String2),
+%     check_equal2(List1, List2, String3, String4),
+%     write_list(String1),
+%     write(=),
+%     write_list(String2),
+%     nl,
+%     write_list(String3),
+%     write(=),
+%     write_list(String4).
+
+
+
+
+
+% Query

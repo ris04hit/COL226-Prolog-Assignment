@@ -1,0 +1,14 @@
+% creates a list (arg3) in which there are {number of occurences of Element (arg1) in (arg2)} zeros
+count_list(_, [], []).
+count_list(Element, [Element | Tail], [0 | Count]) :- count_list(Element, Tail, Count).
+count_list(Element, [Head | Tail], Count) :- Head\=Element, count_list(Element, Tail, Count).
+
+% checks if length of (arg1) is (arg2) or not
+check_length([], _).
+check_length([0 | Tail], 1) :- check_length(Tail, 0).
+
+% checks if (arg1) does not have any entry with its number of occurences more than 2
+has_no_triplicates([]).
+has_no_triplicates([Head | Tail]) :- count_list(Head, Tail, Count), check_length(Count, 1), has_no_triplicates(Tail).
+
+% Query

@@ -1,0 +1,77 @@
+% Removes Element (arg1) from List (arg2) to give (arg3)
+remove(Element, [Element | Tail], Tail).
+remove(Element, [Head | Tail1], [Head | Tail2]) :- 
+    Element \= Head,
+    remove(Element, Tail1, Tail2).
+
+% Gives all the permutations of List (arg1) in (arg2)
+permutation([],[]).
+permutation([Head | Tail], List) :-
+    permutation(Tail, Tail_permute),
+    remove(Head, List, Tail_permute).
+
+% Checks if all the people are present in List (arg1) or not and Element (arg2) is present twice
+checkList(List, Element) :-
+    remove('Alice', List, _),
+    remove('Bob', List, _),
+    remove('Carol', List, _),
+    remove('Davis', List, _),
+    person(Element),
+    remove(Element, List, List_removed),
+    remove(Element, List_removed, _).
+
+% Prints Crossings
+write_crossing([],_).
+write_crossing([Paddler,Rider|Crossing], left) :-
+    write(Paddler),
+    write(' '),
+    write(Rider),
+    nl,
+    write_crossing(Crossing, right).
+write_crossing([Paddler|Crossing], right) :-
+    write(Paddler),
+    nl,
+    write_crossing(Crossing, left).
+
+% Ensure (arg1) is a person
+person('Alice').
+person('Bob').
+person('Carol').
+person('Davis').
+
+% Ensures Paddler (arg1) and Rider (arg2) can travel togethor from left to right in canoe
+canoe_LeftRight('Carol', Rider) :-
+    Rider = 'Alice';
+    Rider = 'Bob';
+    Rider = 'Davis'.
+canoe_LeftRight('Davis', Rider) :-
+    Rider = 'Alice';
+    Rider = 'Bob';
+    Rider = 'Carol'.
+canoe_LeftRight('Bob', 'Carol').
+
+% Assess the situation for people in Left and Right in (arg1) and (arg2) respectively. 
+% (arg5) telling location of boat.
+% (arg3) is the list of people Paddled till now.
+% (arg4) stores all the crossings
+situation(List, [], [], [], left) :-        % initial case
+    permutation(['Alice', 'Bob', 'Carol', 'Davis'], List).
+situation(Left_final, Right_final, [Paddler|Paddle_list_initial], [Paddler, Rider|Crossing], right) :-  % situation after left to right motion of canoe
+    canoe_LeftRight(Paddler, Rider),
+    remove(Paddler, Right_final, Right_intermediate),
+    remove(Rider, Right_intermediate, Right_initial),
+    situation([Rider, Paddler|Left_final], Right_initial, Paddle_list_initial, Crossing, left).
+situation(Left_final, Right_final, [Paddler|Paddle_list_initial], [Paddler|Crossing], left) :-  % situation after right to left motion of canoe
+    remove(Paddler, Left_final, Left_initial),
+    situation(Left_initial, [Paddler | Right_final], Paddle_list_initial, Crossing, right).
+
+% Solves the puzzle
+abcd() :-
+    situation([], ['Alice', 'Bob', 'Carol', 'Davis'], Paddle_List, Crossing, right),
+    checkList(Paddle_List, Final_paddler),
+    write(Final_paddler),
+    nl,
+    write_crossing(Crossing, left).
+
+
+% Query
